@@ -9,7 +9,7 @@
 ![Issues](https://img.shields.io/github/issues/yourusername/mosquitto-acl-visualizer)
 ![Stars](https://img.shields.io/github/stars/yourusername/mosquitto-acl-visualizer?style=social)
 
-A comprehensive tool for parsing, visualizing Mosquitto MQTT broker Access Control Lists (ACLs). T
+A comprehensive tool for parsing, visualizing Mosquitto MQTT broker Access Control Lists (ACLs).
 ## 🚀 Key Features
 
 - **Interactive Visualization**: Visualize client-topic relationships through graphs and tables
