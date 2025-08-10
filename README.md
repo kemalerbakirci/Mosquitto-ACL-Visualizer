@@ -52,7 +52,7 @@ A comprehensive tool for parsing, visualizing, and generating Mosquitto MQTT bro
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/yourusername/mosquitto-acl-visualizer.git
+   git clone https://github.com/kemalerbakirci/mosquitto-acl-visualizer.git
    cd mosquitto-acl-visualizer
    ```
 
