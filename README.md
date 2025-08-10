@@ -9,15 +9,11 @@
 ![Issues](https://img.shields.io/github/issues/yourusername/mosquitto-acl-visualizer)
 ![Stars](https://img.shields.io/github/stars/yourusername/mosquitto-acl-visualizer?style=social)
 
-A comprehensive tool for parsing, visualizing, and generating Mosquitto MQTT broker Access Control Lists (ACLs). This project helps MQTT administrators understand complex ACL configurations and identify potential security issues through interactive visualization.
-
+A comprehensive tool for parsing, visualizing Mosquitto MQTT broker Access Control Lists (ACLs). T
 ## 🚀 Key Features
 
-- **ACL Parsing**: Parse existing Mosquitto ACL files into structured data
 - **Interactive Visualization**: Visualize client-topic relationships through graphs and tables
-- **ACL Generation**: Generate valid Mosquitto ACL files from structured input
 - **Web Interface**: User-friendly web interface for file upload and visualization
-- **Security Analysis**: Identify overlapping permissions and potential security risks
 
 ## 📚 Documentation Map
 
@@ -178,13 +174,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
-## 📞 Support
-
-If you encounter any issues or have questions:
-
-1. Check the [documentation](docs/)
-2. Search existing [issues](https://github.com/yourusername/mosquitto-acl-visualizer/issues)
-3. Create a new issue with detailed information
 
 ## 🙏 Acknowledgments
 
