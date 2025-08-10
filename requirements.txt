@@ -1,0 +1,26 @@
+# Core web framework
+Flask==2.3.3
+Werkzeug==2.3.7
+
+# Template engine
+Jinja2==3.1.2
+MarkupSafe==2.1.3
+
+# Security and utilities
+itsdangerous==2.1.2
+click==8.1.7
+
+# Graph and network analysis
+networkx==3.1
+
+# File handling and validation
+pathlib2==2.3.7
+
+# Development and testing
+pytest==7.4.2
+pytest-cov==4.1.0
+flake8==6.0.0
+
+# Optional: For advanced visualization
+matplotlib==3.7.2
+plotly==5.16.1

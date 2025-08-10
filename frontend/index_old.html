@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mosquitto ACL Visualizer</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1>🦟 Mosquitto ACL Visualizer</h1>
+            <p>Parse, visualize, and generate MQTT Access Control Lists</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="upload-section">
+                    <h3>📁 Upload ACL File</h3>
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-content">
+                            <svg class="upload-icon" viewBox="0 0 24 24">
+                                <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"/>
+                            </svg>
+                            <p>Drop your .acl file here or click to browse</p>
+                            <input type="file" id="fileInput" accept=".acl" hidden>
+                        </div>
+                    </div>
+                    <div class="upload-status" id="uploadStatus"></div>
+                </div>
+
+                <div class="controls-section">
+                    <h3>🎛️ Controls</h3>
+                    
+                    <div class="control-group">
+                        <label>View Mode:</label>
+                        <div class="button-group">
+                            <button class="control-btn active" data-view="table">Table</button>
+                            <button class="control-btn" data-view="graph">Graph</button>
+                            <button class="control-btn" data-view="security">Security</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="accessFilter">Access Filter:</label>
+                        <select id="accessFilter" multiple>
+                            <option value="read">Read</option>
+                            <option value="write">Write</option>
+                            <option value="readwrite">ReadWrite</option>
+                        </select>
+                    </div>
+
+                    <div class="control-group">
+                        <label for="clientFilter">Client Filter:</label>
+                        <input type="text" id="clientFilter" placeholder="Filter clients...">
+                    </div>
+
+                    <div class="control-group">
+                        <label for="topicFilter">Topic Filter:</label>
+                        <input type="text" id="topicFilter" placeholder="Filter topics...">
+                    </div>
+                </div>
+
+                <div class="export-section">
+                    <h3>💾 Export</h3>
+                    <div class="button-group vertical">
+                        <button class="export-btn" id="exportJson">Export JSON</button>
+                        <button class="export-btn" id="exportCsv">Export CSV</button>
+                        <button class="export-btn" id="generateAcl">Generate ACL</button>
+                    </div>
+                </div>
+
+                <div class="stats-section" id="statsSection">
+                    <h3>📊 Statistics</h3>
+                    <div id="statsContent">
+                        <p>No data loaded</p>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Content Area -->
+            <section class="content-area">
+                <!-- Welcome Screen -->
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-content">
+                        <h2>Welcome to Mosquitto ACL Visualizer</h2>
+                        <p>Upload your Mosquitto ACL file to get started with visualization and analysis.</p>
+                        
+                        <div class="features">
+                            <div class="feature">
+                                <h4>🔍 Parse & Analyze</h4>
+                                <p>Parse ACL files and analyze client permissions</p>
+                            </div>
+                            <div class="feature">
+                                <h4>📈 Visualize</h4>
+                                <p>Interactive graphs showing client-topic relationships</p>
+                            </div>
+                            <div class="feature">
+                                <h4>🔒 Security</h4>
+                                <p>Identify potential security issues and overlapping permissions</p>
+                            </div>
+                            <div class="feature">
+                                <h4>⚙️ Generate</h4>
+                                <p>Create new ACL files from modified configurations</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table View -->
+                <div class="view-content" id="tableView" style="display: none;">
+                    <div class="view-header">
+                        <h2>📋 ACL Rules Table</h2>
+                        <div class="view-controls">
+                            <button class="toggle-btn" id="expandAll">Expand All</button>
+                            <button class="toggle-btn" id="collapseAll">Collapse All</button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="acl-table" id="aclTable">
+                            <thead>
+                                <tr>
+                                    <th>Client</th>
+                                    <th>Rules Count</th>
+                                    <th>Read Permissions</th>
+                                    <th>Write Permissions</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="aclTableBody">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Graph View -->
+                <div class="view-content" id="graphView" style="display: none;">
+                    <div class="view-header">
+                        <h2>🕸️ Network Graph</h2>
+                        <div class="view-controls">
+                            <button class="toggle-btn" id="resetZoom">Reset Zoom</button>
+                            <button class="toggle-btn" id="toggleLabels">Toggle Labels</button>
+                        </div>
+                    </div>
+                    <div class="graph-container">
+                        <svg id="networkGraph"></svg>
+                    </div>
+                    
+                    <div class="graph-legend">
+                        <h4>Legend:</h4>
+                        <div class="legend-items">
+                            <div class="legend-item">
+                                <span class="legend-color client"></span>
+                                <span>Clients</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-color topic"></span>
+                                <span>Topics</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-line read"></span>
+                                <span>Read Access</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-line write"></span>
+                                <span>Write Access</span>
+                            </div>
+                            <div class="legend-item">
+                                <span class="legend-line readwrite"></span>
+                                <span>Read/Write Access</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security View -->
+                <div class="view-content" id="securityView" style="display: none;">
+                    <div class="view-header">
+                        <h2>🔒 Security Analysis</h2>
+                        <div class="security-score" id="securityScore">
+                            <span class="score-label">Security Score:</span>
+                            <span class="score-value" id="scoreValue">--</span>
+                        </div>
+                    </div>
+                    
+                    <div class="security-sections">
+                        <div class="security-section">
+                            <h3>🚨 High Priority Issues</h3>
+                            <div class="issue-list" id="highIssues">
+                                <p class="no-issues">No high priority issues found</p>
+                            </div>
+                        </div>
+                        
+                        <div class="security-section">
+                            <h3>⚠️ Warnings</h3>
+                            <div class="issue-list" id="warnings">
+                                <p class="no-issues">No warnings found</p>
+                            </div>
+                        </div>
+                        
+                        <div class="security-section">
+                            <h3>💡 Recommendations</h3>
+                            <div class="issue-list" id="recommendations">
+                                <p class="no-issues">No recommendations available</p>
+                            </div>
+                        </div>
+                        
+                        <div class="security-section">
+                            <h3>🔗 Topic Overlaps</h3>
+                            <div class="overlap-container">
+                                <canvas id="overlapChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ACL Editor Modal -->
+        <div class="modal" id="aclEditorModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>✏️ Edit ACL Rules</h3>
+                    <button class="close-btn" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="editor-section">
+                        <label for="clientName">Client Name:</label>
+                        <input type="text" id="clientName" readonly>
+                    </div>
+                    
+                    <div class="editor-section">
+                        <h4>Rules:</h4>
+                        <div class="rules-editor" id="rulesEditor">
+                            <!-- Rules will be dynamically added here -->
+                        </div>
+                        <button class="add-rule-btn" id="addRule">+ Add Rule</button>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn secondary" id="cancelEdit">Cancel</button>
+                    <button class="btn primary" id="saveEdit">Save Changes</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Notifications -->
+        <div class="toast-container" id="toastContainer"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

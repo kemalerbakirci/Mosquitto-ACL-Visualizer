@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Mosquitto ACL Visualizer</title>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="minimal-app">
+        <header class="minimal-header">
+            <h1>ACL Graph Viewer</h1>
+            <p class="tagline">Upload a Mosquitto ACL file to visualize client ↔ topic permissions.</p>
+            <div class="graph-legend" id="graphLegend" aria-hidden="true">
+                <div class="legend-item"><span class="legend-dot client"></span> Client</div>
+                <div class="legend-item"><span class="legend-dot topic"></span> Topic</div>
+                <div class="legend-item"><span class="legend-line read"></span> Read</div>
+                <div class="legend-item"><span class="legend-line write"></span> Write</div>
+                <div class="legend-item"><span class="legend-line readwrite"></span> ReadWrite</div>
+            </div>
+        </header>
+        <section class="upload-bar" id="uploadArea">
+            <input type="file" id="fileInput" accept=".acl" />
+            <div class="upload-instructions">Drop .acl file or click to select</div>
+            <div id="uploadStatus" class="status"></div>
+        </section>
+        <section class="graph-section">
+            <div class="graph-wrapper">
+                <svg id="networkGraph" aria-label="Client to topic relationship graph"></svg>
+            </div>
+            <div id="graphDetails" class="details-panel" style="display:none;">
+                <div class="details-header">
+                    <h3 id="detailsTitle">Details</h3>
+                    <button id="closeDetails" class="close-btn" aria-label="Close details">×</button>
+                </div>
+                <div id="detailsBody" class="details-body"></div>
+            </div>
+        </section>
+        <div id="toastContainer" class="toast-container" aria-live="assertive" aria-atomic="true"></div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

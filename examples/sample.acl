@@ -1,0 +1,31 @@
+
+# Temperature sensors
+user temp_sensor_001
+topic write sensors/temperature/room1
+topic read config/temp_sensor_001
+
+user temp_sensor_002  
+topic write sensors/temperature/room2
+topic read config/temp_sensor_002
+
+# Humidity sensor
+user humidity_sensor_001
+topic write sensors/humidity/room1
+topic read config/humidity_sensor_001
+
+# HVAC Controller
+user hvac_controller
+topic read sensors/+/+
+topic write actuators/hvac/+
+topic readwrite devices/hvac/status
+
+# Building Management System
+user building_mgmt
+topic read sensors/#
+topic read devices/#
+topic write config/+
+topic write actuators/building/+
+
+# System Administrator
+user admin
+topic readwrite #
